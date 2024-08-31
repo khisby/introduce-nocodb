@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: nocodb
+      MYSQL_USER: nocodbuser
+      MYSQL_PASSWORD: nocodbpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  nocodb:
+    image: nocodb/nocodb:latest
+    container_name: nocodb
+    restart: unless-stopped
+    environment:
+      NC_ADMIN_EMAIL: "khisby@gmail.com"
+      NC_ADMIN_PASSWORD: "Admin#1234"
+      NC_DB: "mysql2://nocodbuser:nocodbpassword@mysql:3306?u=nocodbuser\u0026p=nocodbpassword\u0026d=nocodb"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
